@@ -10,9 +10,11 @@ jobs:
     - name: Install FFmpeg
       run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
-    - name: Download Video from Google Drive
+    - name: Download Large Video from Google Drive
       run: |
-        curl -L "https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -o video.mp4
+        curl -c cookies.txt -to-stdout "https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" > /dev/null
+        CONFIRM=$(curl -b cookies.txt -to-stdout "https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" | grep -o 'confirm=[^&]*' | head -n 1)
+        curl -L -b cookies.txt "https://docs.google.com/uc?export=download&${CONFIRM}&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -o video.mp4
 
     - name: Start Live Stream Loop
       run: |
