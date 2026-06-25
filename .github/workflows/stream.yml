@@ -8,13 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install FFmpeg
-      run: sudo apt-get update && sudo apt-get install -y ffmpeg wget
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg curl
 
-    - name: Get Video From Drive
+    - name: Download Video Smoothly
       run: |
-        wget --no-check-certificate "https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -O confirmation.html
-        CONFIRM=$(grep -o -E 'confirm=[0-9A-Za-z_]+' confirmation.html | head -n 1 | cut -d= -f2)
-        wget --no-check-certificate "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -O video.mp4
+        curl -c /tmp/cookies.txt -sL "https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" > /tmp/inter.html
+        CONFIRM=$(grep -o 'confirm=[^&]*' /tmp/inter.html | head -n 1 | cut -d= -f2)
+        curl -b /tmp/cookies.txt -sL "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -o video.mp4
 
     - name: Start Live Stream Loop
       run: |
