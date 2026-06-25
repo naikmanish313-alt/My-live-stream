@@ -8,20 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install FFmpeg
-      run: sudo apt-get update && sudo apt-get install -y ffmpeg wget
-
-    - name: Download Video Direct Bypass
-      run: |
-        wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY' -O- | grep -o 'confirm=[^&]*' | head -n 1 | cut -d= -f2 > /tmp/confirm.txt
-        CONFIRM=$(cat /tmp/confirm.txt)
-        if [ -z "$CONFIRM" ]; then
-          echo "No confirm token, trying direct download..."
-          wget --no-check-certificate "https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -O video.mp4
-        else
-          echo "Bypass Token Found: $CONFIRM"
-          wget --no-check-certificate "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -O video.mp4
-        fi
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
     - name: Start Live Stream Loop
       run: |
-        ffmpeg -stream_loop -1 -re -i video.mp4 -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
+        ffmpeg -stream_loop -1 -re -i "https://www.dropbox.com/scl/fi/odsk7a8rfu81yivx99rre/lv_0_20260624122552.mp4?rlkey=mt8gul3tuln81t34r9fq7nh61&st=wpq6m0z4&dl=1" -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
