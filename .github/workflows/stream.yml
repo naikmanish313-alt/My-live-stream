@@ -10,7 +10,12 @@ jobs:
     - name: Install FFmpeg
       run: sudo apt-get update && sudo apt-get install -y ffmpeg wget
 
-    - name: Download Large Video from Drive and Stream
+    - name: Get Video From Drive
       run: |
-        wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -O video.mp4 && rm -rf /tmp/cookies.txt
+        wget --no-check-certificate "https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -O confirmation.html
+        CONFIRM=$(grep -o -E 'confirm=[0-9A-Za-z_]+' confirmation.html | head -n 1 | cut -d= -f2)
+        wget --no-check-certificate "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -O video.mp4
+
+    - name: Start Live Stream Loop
+      run: |
         ffmpeg -stream_loop -1 -re -i video.mp4 -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
