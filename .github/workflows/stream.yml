@@ -12,4 +12,4 @@ jobs:
 
     - name: Start Live Stream Loop
       run: |
-        ffmpeg -stream_loop -1 -re -i "https://docs.google.com/uc?export=download&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
+        ffmpeg -stream_loop -1 -re -i "https://drive.google.com/uc?export=download&confirm=t&id=1KycKzuY8YIkpi4XIC9MC2LpAAO4OThJY" -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
