@@ -12,4 +12,4 @@ jobs:
 
     - name: Start Live Stream Loop
       run: |
-        ffmpeg -stream_loop -1 -re -i "https://download2343.mediafire.com/9jd4urybea39dit/file/lv_0_20260624122552.mp4" -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
+        ffmpeg -stream_loop -1 -re -i "https://stream.gofile.io/download/direct/bc12f347-e02f-476d-ac06-3f8843c604b8/lv_0_20260624122552.mp4" -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
