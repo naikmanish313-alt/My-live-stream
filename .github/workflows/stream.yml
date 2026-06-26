@@ -3,7 +3,7 @@ name: 24-7 YouTube Live Stream
 on:
   workflow_dispatch:
   schedule:
-    # Har 5 ghante mein automatic restart trigger
+    # Har 5 ghante mein automatic naya restart trigger karega
     - cron: '0 */5 * * *'
 
 jobs:
@@ -11,8 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install FFmpeg
-      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg wget
+
+    - name: Download Video File Locally
+      run: |
+        # Isse aapki Dropbox file server par pehle save ho jayegi bina kisi network error ke
+        wget -O local_video.mp4 "https://www.dropbox.com/scl/fi/odsk7a8rfu81yivx99rre/lv_0_20260624122552.mp4?rlkey=mt8gul3tuln81t34r9fq7nh61&st=wpq6m0z4&dl=1"
 
     - name: Start Live Stream Loop
       run: |
-        ffmpeg -re -stream_loop -1 -i "https://www.dropbox.com/scl/fi/odsk7a8rfu81yivx99rre/lv_0_20260624122552.mp4?rlkey=mt8gul3tuln81t34r9fq7nh61&st=wpq6m0z4&dl=1" -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
+        # Local saved file ko ab FFmpeg smooth loop mein chalayega
+        ffmpeg -stream_loop -1 -re -i local_video.mp4 -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
